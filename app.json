@@ -40,6 +40,12 @@
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4bc938a0-1131-463c-8e2d-eed41e68cad3"
+      }
+    },
+    "owner": "tatianajrogel"
   }
 }
