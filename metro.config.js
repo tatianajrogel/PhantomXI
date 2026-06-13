@@ -7,24 +7,11 @@ const config = getDefaultConfig(__dirname);
 // Ensure Metro can resolve ESM/mjs files
 config.resolver.sourceExts = [...(config.resolver.sourceExts || []), 'mjs'];
 
-// Force Metro to use project-local resolution only
-config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
-
-// Prevent cross-project module resolution
-config.resolver.disableHierarchicalLookup = true;
-
-// Add alias for @supabase/node-fetch to prevent dynamic import issues
+// Alias @supabase/node-fetch to a lightweight shim so Metro does not pull in
+// the Node-only dynamic import path (which breaks the RN/web bundles).
 config.resolver.extraNodeModules = {
   ...config.resolver.extraNodeModules,
   '@supabase/node-fetch': path.resolve(__dirname, 'shims', 'node-fetch.js'),
 };
-
-// Clear Metro transform cache on each build
-config.resetCache = true;
-
-// Ensure proper module resolution
-config.resolver.nodeModulesPaths = [
-  path.resolve(__dirname, 'node_modules'),
-];
 
 module.exports = config;
