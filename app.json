@@ -1,17 +1,19 @@
 {
   "expo": {
     "name": "PhantomXI Fantasy Football",
-    "slug": "fantasy-football-premier",
+    "slug": "phantomxi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "fantasy-football-premier",
+    "scheme": "phantomxi",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.phantomxi.app"
     },
     "android": {
+      "package": "com.phantomxi.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -46,6 +48,9 @@
         "projectId": "4bc938a0-1131-463c-8e2d-eed41e68cad3"
       }
     },
-    "owner": "tatianajrogel"
+    "owner": "tatianarogel",
+    "updates": {
+      "url": "https://u.expo.dev/4bc938a0-1131-463c-8e2d-eed41e68cad3"
+    }
   }
 }
