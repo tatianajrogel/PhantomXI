@@ -38,3 +38,4 @@ apps/web/.env*.local
 apps/web/.next/
 apps/web/out/
 apps/web/node_modules/
+.vercel
