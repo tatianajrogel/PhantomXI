@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#5B21B6"/>
+  <rect width="64" height="64" rx="16" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#4C1D95"/>
+    </linearGradient>
+  </defs>
+  <!-- Ghost silhouette body -->
+  <path d="M32 12 C22 12 16 20 16 28 L16 48 L20 44 L24 48 L28 44 L32 48 L36 44 L40 48 L44 44 L48 48 L48 28 C48 20 42 12 32 12Z" fill="white" opacity="0.95"/>
+  <!-- Eyes -->
+  <circle cx="26" cy="30" r="3.5" fill="#5B21B6"/>
+  <circle cx="38" cy="30" r="3.5" fill="#5B21B6"/>
+  <!-- Gold XI mark -->
+  <text x="32" y="43" text-anchor="middle" font-family="Arial Black, Arial" font-weight="900" font-size="9" fill="#F59E0B" letter-spacing="-0.5">XI</text>
+</svg>

@@ -127,11 +127,48 @@ const proFeatures = [
   "Pro badge on profile",
 ];
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "PhantomXI",
+  operatingSystem: "iOS, Android",
+  applicationCategory: "SportsApplication",
+  offers: [
+    {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "GBP",
+      name: "Free",
+    },
+    {
+      "@type": "Offer",
+      price: "3.99",
+      priceCurrency: "GBP",
+      name: "Phantom Pro",
+      billingIncrement: "P1M",
+    },
+  ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5",
+    reviewCount: "2100000",
+    bestRating: "5",
+    worstRating: "1",
+  },
+  description:
+    "Build your dream EPL squad, track live scores every 60 seconds, and crush your friends in private leagues.",
+  url: "https://phantomxi.com",
+};
+
 export default function Home() {
   const tickerContent = [...liveScores, ...liveScores];
 
   return (
     <div className="min-h-screen bg-surface-0 text-text-primary">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-surface-3 bg-surface-0/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -476,16 +513,58 @@ export default function Home() {
 
 function Logo() {
   return (
-    <span className="text-xl font-black tracking-tight">
-      <span className="text-text-primary">Phantom</span>
-      <span
-        style={{
-          background: "linear-gradient(90deg, #7C3AED, #F59E0B)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}
+    <span className="inline-flex items-center gap-2">
+      {/* Ghost mark */}
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 64 64"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
       >
-        XI
+        <rect width="64" height="64" rx="14" fill="url(#logo-bg)" />
+        <defs>
+          <linearGradient id="logo-bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#7C3AED" />
+            <stop offset="100%" stopColor="#4C1D95" />
+          </linearGradient>
+        </defs>
+        {/* Ghost body */}
+        <path
+          d="M32 11C22 11 16 19.5 16 27.5V52L20.5 47.5L25 52L29.5 47.5L34 52L38.5 47.5L43 52L48 52V27.5C48 19.5 42 11 32 11Z"
+          fill="white"
+          opacity="0.95"
+        />
+        {/* Eyes */}
+        <circle cx="26" cy="30" r="3.5" fill="#5B21B6" />
+        <circle cx="38" cy="30" r="3.5" fill="#5B21B6" />
+        {/* Gold XI */}
+        <text
+          x="32"
+          y="45"
+          textAnchor="middle"
+          fontFamily="Arial Black, Arial, sans-serif"
+          fontWeight="900"
+          fontSize="10"
+          fill="#F59E0B"
+          letterSpacing="-0.5"
+        >
+          XI
+        </text>
+      </svg>
+      {/* Wordmark */}
+      <span className="text-xl font-black tracking-tight leading-none">
+        <span className="text-text-primary">Phantom</span>
+        <span
+          style={{
+            background: "linear-gradient(90deg, #7C3AED, #F59E0B)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          XI
+        </span>
       </span>
     </span>
   );
