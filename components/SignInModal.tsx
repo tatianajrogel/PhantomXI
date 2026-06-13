@@ -20,10 +20,11 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  onGuest?: () => void;
 }
 
-export default function SignInModal({ visible, onClose, onSuccess }: Props) {
-  const { signInEmail, signUpEmail, signInOAuth } = useAuth();
+export default function SignInModal({ visible, onClose, onSuccess, onGuest }: Props) {
+  const { signInEmail, signUpEmail, signInOAuth, continueAsGuest } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -69,6 +70,12 @@ export default function SignInModal({ visible, onClose, onSuccess }: Props) {
     const res = await signInOAuth(provider);
     setLoading(false);
     if (res.error) setError(res.error);
+  };
+
+  const guest = () => {
+    reset();
+    continueAsGuest();
+    onGuest?.();
   };
 
   return (
@@ -169,6 +176,11 @@ export default function SignInModal({ visible, onClose, onSuccess }: Props) {
                 </Text>
               </Text>
             </Pressable>
+
+            <Pressable style={styles.guestBtn} onPress={guest} disabled={loading}>
+              <Ionicons name="eye-outline" size={17} color={colors.textMuted} />
+              <Text style={styles.guestBtnText}>Explore as guest — no sign up</Text>
+            </Pressable>
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
@@ -243,4 +255,16 @@ const styles = StyleSheet.create({
   switch: { alignItems: 'center', marginTop: 18 },
   switchText: { color: colors.textMuted, fontSize: 13 },
   switchLink: { color: colors.primaryLit, fontWeight: '800' },
+  guestBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 18,
+    paddingVertical: 13,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.surface3,
+  },
+  guestBtnText: { color: colors.textMuted, fontSize: 13, fontWeight: '700' },
 });

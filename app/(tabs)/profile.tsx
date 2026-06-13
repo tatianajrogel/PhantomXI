@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Gradient from '../../components/Gradient';
+import SignInModal from '../../components/SignInModal';
 import { useAuth } from '../lib/auth';
 import { colors, radius } from '../../constants/theme';
 import { badges } from '../../constants/data';
@@ -19,18 +20,20 @@ const seasonHistory = [
 
 export default function Profile() {
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const { user, isGuest, signOut } = useAuth();
   const [darkMode, setDarkMode] = useState(true);
   const [notifs, setNotifs] = useState(true);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [smsOptIn, setSmsOptIn] = useState(true);
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [authOpen, setAuthOpen] = useState(false);
 
-  const managerName =
-    (user?.user_metadata?.display_name as string) ||
-    user?.email?.split('@')[0] ||
-    'Spectre';
+  const managerName = isGuest
+    ? 'Guest Manager'
+    : (user?.user_metadata?.display_name as string) ||
+      user?.email?.split('@')[0] ||
+      'Spectre';
 
   const handleSignOut = async () => {
     await signOut();
@@ -69,11 +72,20 @@ export default function Profile() {
             <Image source={{ uri: AVATAR }} style={styles.avatar} contentFit="cover" />
           </View>
           <Text style={styles.name}>{managerName}</Text>
-          <Text style={styles.handle}>{user?.email ?? '@spectral_squad'}</Text>
-          <View style={styles.proBadge}>
-            <Ionicons name="star" size={11} color="#000" />
-            <Text style={styles.proBadgeText}>PHANTOM PRO</Text>
-          </View>
+          <Text style={styles.handle}>
+            {isGuest ? 'Browsing as guest' : user?.email ?? '@spectral_squad'}
+          </Text>
+          {isGuest ? (
+            <Pressable style={styles.guestSignUpBadge} onPress={() => setAuthOpen(true)}>
+              <Ionicons name="person-add" size={11} color="#fff" />
+              <Text style={styles.guestSignUpText}>Sign up to save your squad</Text>
+            </Pressable>
+          ) : (
+            <View style={styles.proBadge}>
+              <Ionicons name="star" size={11} color="#000" />
+              <Text style={styles.proBadgeText}>PHANTOM PRO</Text>
+            </View>
+          )}
         </Gradient>
 
         {/* Stat cards */}
@@ -142,11 +154,19 @@ export default function Profile() {
             />
           </View>
           <View style={styles.settingDivider} />
-          <Pressable style={styles.settingRow} onPress={handleSignOut}>
-            <Ionicons name="log-out" size={20} color={colors.danger} />
-            <Text style={[styles.settingLabel, { color: colors.danger }]}>Sign Out</Text>
-            <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
-          </Pressable>
+          {isGuest ? (
+            <Pressable style={styles.settingRow} onPress={() => setAuthOpen(true)}>
+              <Ionicons name="log-in" size={20} color={colors.primaryLit} />
+              <Text style={[styles.settingLabel, { color: colors.primaryLit }]}>Sign In / Sign Up</Text>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
+            </Pressable>
+          ) : (
+            <Pressable style={styles.settingRow} onPress={handleSignOut}>
+              <Ionicons name="log-out" size={20} color={colors.danger} />
+              <Text style={[styles.settingLabel, { color: colors.danger }]}>Sign Out</Text>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
+            </Pressable>
+          )}
         </View>
 
         {/* Newsletter signup */}
@@ -201,6 +221,12 @@ export default function Profile() {
 
         <Text style={styles.footer}>PhantomXI v1.0 · Not affiliated with the Premier League</Text>
       </ScrollView>
+
+      <SignInModal
+        visible={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onSuccess={() => setAuthOpen(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -230,6 +256,17 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   proBadgeText: { color: '#000', fontSize: 11, fontWeight: '900', letterSpacing: 1 },
+  guestSignUpBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.primaryLit,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: radius.pill,
+    marginTop: 10,
+  },
+  guestSignUpText: { color: '#fff', fontSize: 12, fontWeight: '800' },
   statRow: { flexDirection: 'row', gap: 10, paddingHorizontal: 20, marginTop: -16 },
   statCard: {
     flex: 1,

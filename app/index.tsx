@@ -28,17 +28,23 @@ const features = [
 export default function Landing() {
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const { user } = useAuth();
+  const { isAuthenticated, continueAsGuest } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
 
-  // If already signed in, jump straight into the app.
+  // If already signed in (or browsing as guest), jump straight into the app.
   useEffect(() => {
-    if (user) router.replace('/(tabs)');
-  }, [user]);
+    if (isAuthenticated) router.replace('/(tabs)');
+  }, [isAuthenticated]);
 
   const enter = () => {
-    if (user) router.push('/(tabs)');
+    if (isAuthenticated) router.push('/(tabs)');
     else setAuthOpen(true);
+  };
+
+  // Let visitors explore the whole app without creating an account.
+  const exploreAsGuest = () => {
+    continueAsGuest();
+    router.replace('/(tabs)');
   };
 
   return (
@@ -81,6 +87,11 @@ export default function Landing() {
             <Pressable style={styles.cta} onPress={enter}>
               <Text style={styles.ctaText}>Start Your Squad</Text>
               <Ionicons name="arrow-forward" size={18} color="#fff" />
+            </Pressable>
+
+            <Pressable style={styles.guestCta} onPress={exploreAsGuest}>
+              <Ionicons name="eye-outline" size={17} color={colors.textPrimary} />
+              <Text style={styles.guestCtaText}>Explore as guest — no sign up</Text>
             </Pressable>
 
             <View style={styles.statsRow}>
@@ -149,6 +160,10 @@ export default function Landing() {
           setAuthOpen(false);
           router.replace('/(tabs)');
         }}
+        onGuest={() => {
+          setAuthOpen(false);
+          router.replace('/(tabs)');
+        }}
       />
     </View>
   );
@@ -207,6 +222,19 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
   },
   ctaText: { color: '#fff', fontSize: 16, fontWeight: '800' },
+  guestCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 14,
+    borderRadius: radius.md,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.25)',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+  },
+  guestCtaText: { color: colors.textPrimary, fontSize: 14, fontWeight: '700' },
   statsRow: { flexDirection: 'row', marginTop: 32, gap: 12 },
   statBox: {
     flex: 1,

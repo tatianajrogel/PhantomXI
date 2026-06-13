@@ -6,10 +6,15 @@ import type { Session, User } from '@supabase/supabase-js';
 interface AuthContextValue {
   session: Session | null;
   user: User | null;
+  /** True when browsing as a guest/demo user (no real account). */
+  isGuest: boolean;
+  /** True for a signed-in account OR an active guest session. */
+  isAuthenticated: boolean;
   loading: boolean;
   signInEmail: (email: string, password: string) => Promise<{ error?: string }>;
   signUpEmail: (email: string, password: string, displayName: string) => Promise<{ error?: string }>;
   signInOAuth: (provider: 'google' | 'apple') => Promise<{ error?: string }>;
+  continueAsGuest: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -17,6 +22,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
+  const [isGuest, setIsGuest] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,6 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInEmail = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (!error) setIsGuest(false);
     return { error: error?.message };
   }, []);
 
@@ -53,12 +60,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       provider,
       options: { redirectTo },
     });
+    if (!error) setIsGuest(false);
     return { error: error?.message };
+  }, []);
+
+  const continueAsGuest = useCallback(() => {
+    setIsGuest(true);
   }, []);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setSession(null);
+    setIsGuest(false);
   }, []);
 
   return (
@@ -66,10 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         session,
         user: session?.user ?? null,
+        isGuest,
+        isAuthenticated: !!session || isGuest,
         loading,
         signInEmail,
         signUpEmail,
         signInOAuth,
+        continueAsGuest,
         signOut,
       }}
     >
