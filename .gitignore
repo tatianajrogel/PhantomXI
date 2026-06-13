@@ -27,3 +27,14 @@ android
 
 expo-env.d.ts
 .claude/PHANTOMXI_PRODUCTION_PLAN.md
+
+# Environment files
+.env.local
+.env*.local
+apps/web/.env.local
+apps/web/.env*.local
+
+# Next.js
+apps/web/.next/
+apps/web/out/
+apps/web/node_modules/
